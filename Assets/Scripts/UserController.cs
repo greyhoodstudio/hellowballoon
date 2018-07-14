@@ -7,8 +7,13 @@ public class UserController : MonoBehaviour {
     private bool touch;
     private GameObject player;
 
-	// Use this for initialization
-	void Start () {
+    private void Awake()
+    {
+        //DontDestroyOnLoad(this.gameObject);
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
@@ -20,7 +25,6 @@ public class UserController : MonoBehaviour {
     void Touch () {
         if (Input.GetKeyDown("space"))
         {
-            Debug.Log("ddddd");
             touch = true;
             player = GameObject.FindWithTag("Player");
             player.GetComponent<PlayerController>().Jump();

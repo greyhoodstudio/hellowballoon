@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class UIDirector : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+
+    private void Awake()
+    {
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
