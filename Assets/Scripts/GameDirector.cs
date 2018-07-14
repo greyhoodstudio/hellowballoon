@@ -35,7 +35,11 @@ public class GameDirector : MonoBehaviour {
 	}
 
     public void LoadPlayScene() {
+<<<<<<< HEAD
         SceneManager.LoadScene("PlayScene");
+=======
+        SceneManager.LoadScene("MainScene");
+>>>>>>> e2077d24748cb5fe70a650fb23eb5677830296ea
     }
 
 }
