@@ -6,6 +6,9 @@ TagManager:
   tags:
   - UI
   - BackGround
+  - Director
+  - GameOver
+  - PlayDirector
   layers:
   - Default
   - TransparentFX
@@ -42,4 +45,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: ControllObject
+    uniqueID: 4239323805
+    locked: 0
+  - name: Background
+    uniqueID: 2978798117
+    locked: 0
+  - name: Player
+    uniqueID: 2142474567
     locked: 0

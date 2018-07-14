@@ -7,10 +7,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
     
     public float jumpForce = 6.0f;
+    private GameObject gameOver;
 
-	// Use this for initialization
-	void Start () {
-		
+    void Awake()
+    {
+        gameOver = GameObject.FindWithTag("GameOver");
+    }
+
+    // Use this for initialization
+    void Start () {
+        gameOver.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -27,12 +33,17 @@ public class PlayerController : MonoBehaviour {
         Debug.Log("jump");
     }
 
+    private void PopUPGameOver()
+    {
+        gameOver.SetActive(true);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "GameController")
         {
             Debug.Log("Game Over");
-            //
+            PopUPGameOver();
         }
     }
 }
