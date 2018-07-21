@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 public class GameDirector : MonoBehaviour {
     private static GameDirector _instance = null; 
@@ -22,8 +19,12 @@ public class GameDirector : MonoBehaviour {
         }
     }
 
-    public void LoadPlayScene() {
-        SceneManager.LoadScene("PlayScene");
+    public void SaveHighScore(int score, string name, float time) {
+        GameData data = SaveFile.LoadData();
+        if (data.score < score) {
+            SaveFile.SetSaveData(score, name, time);
+            SaveFile.SaveData();
+        }
     }
 
 }
