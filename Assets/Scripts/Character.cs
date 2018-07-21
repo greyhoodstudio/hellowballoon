@@ -2,18 +2,28 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Character : MonoBehaviour {
 
-    [Header("Jump")]
-    [Range(0f, 100f)]
+    [Header("Force")]
+    [Range(0f, 10f)]
     public float jumpForce = 1.0f;
-    [Range(0f, 100f)]
+    [Range(0f, 10f)]
     public float powerForce = 6.0f;
     [Range(0f, 5f)]
     public float jumpCoolDown = 6.0f;
 
+    [Header("Rotate")]
+    [Range(0f, 5f)]
+    public float correctRotate = 2.0f;
+    [Range(0f, 5f)]
+    public float rotateValue = 0.5f;
+
+
     GameObject[] powers;
     bool canTouch;
+
+
 
     protected void Awake()
     {        
@@ -27,7 +37,9 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     protected void Update()
     {
-        
+        if (Input.GetKeyDown("space")) {
+            Jump();
+        }
     }
 
     protected void FixedUpdate()
@@ -37,18 +49,17 @@ public class Character : MonoBehaviour {
         {
             // right
             RightPower();
-            Debug.Log("right");
         }
         else if (Input.GetAxis("Horizontal") < 0)
         {
             // left
             LeftPower();
-            Debug.Log("left");
         }
 
+        Rotate();
     }
 
-    protected void Rotate(float rotateValue) {
+    protected void Rotate() {
         if (gameObject.transform.position.x < 0) {
             gameObject.GetComponent<Rigidbody2D>().AddTorque(-rotateValue);
         } else if (gameObject.transform.position.x > 0){
@@ -57,28 +68,25 @@ public class Character : MonoBehaviour {
     }
 
     protected void LeftPower() {
-        //Vector2 jumping = gameObject.transform.GetChild(0).GetComponent<Rigidbody2D>().velocity;
+        Vector2 vector = new Vector2(-powerForce, jumpForce);
+        gameObject.GetComponent<Rigidbody2D>().AddTorque(correctRotate);
+        gameObject.GetComponent<Rigidbody2D>().AddForce(vector, ForceMode2D.Impulse);
 
-        //jumping.x = transform.position.x - powerForce;
-        //jumping.y = transform.position.y + jumpForce;
-        //gameObject.GetComponent<Rigidbody2D>().velocity = jumping;
-
-        gameObject.transform.GetChild(0).GetComponent<Rigidbody2D>().AddForce(new Vector2(-powerForce, jumpForce) * 10f * Time.deltaTime);
     }
 
     protected void RightPower()
     {
-        //Vector2 jumping = gameObject.transform.GetChild(1).GetComponent<Rigidbody2D>().velocity;
-        //jumping.x = transform.position.x + powerForce;
-        //jumping.y = transform.position.y + jumpForce;
-        //gameObject.GetComponent<Rigidbody2D>().velocity = jumping;
+        Vector2 vector = new Vector2(powerForce, jumpForce);
+        gameObject.GetComponent<Rigidbody2D>().AddTorque(-correctRotate);
+        gameObject.GetComponent<Rigidbody2D>().AddForce(vector, ForceMode2D.Impulse);
 
-        gameObject.transform.GetChild(1).GetComponent<Rigidbody2D>().AddForce(new Vector2(powerForce, jumpForce) * 10f * Time.deltaTime);
     }
 
     public void Jump()
     {
         canTouch = false;
+
+        gameObject.transform.GetChild(0).GetComponent<Rigidbody2D>().AddRelativeForce(Vector2.up * 100, ForceMode2D.Impulse);
 
         StartCoroutine("CoolDown");
 
