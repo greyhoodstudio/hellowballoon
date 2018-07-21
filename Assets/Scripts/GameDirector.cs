@@ -4,42 +4,26 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameDirector : MonoBehaviour {
-    public static GameDirector instance = null; 
-    private void Awake()
+    private static GameDirector _instance = null; 
+
+    public static GameDirector Instance
     {
-        gameObject.tag = "Director";
-
-        //Check if instance already exists
-        if (instance == null)
+        get
         {
-            //if not, set instance to this
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
-            Destroy(gameObject);
-        }
-        DontDestroyOnLoad(this.gameObject);
+            if (_instance == null) {
+                _instance = FindObjectOfType(typeof(GameDirector)) as GameDirector;
 
+                if (_instance == null ) {
+                    Debug.LogError("There is no active gamedirector class object");
+                } 
+            }
+
+            return _instance;
+        }
     }
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
     public void LoadPlayScene() {
-<<<<<<< HEAD
         SceneManager.LoadScene("PlayScene");
-=======
-        SceneManager.LoadScene("MainScene");
->>>>>>> e2077d24748cb5fe70a650fb23eb5677830296ea
     }
 
 }

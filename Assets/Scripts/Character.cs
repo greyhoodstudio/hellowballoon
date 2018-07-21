@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayDirector : MonoBehaviour {
+public class Character : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
