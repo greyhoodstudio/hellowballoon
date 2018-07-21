@@ -9,6 +9,7 @@ TagManager:
   - Director
   - GameOver
   - PlayDirector
+  - Cinemachine
   layers:
   - Default
   - TransparentFX

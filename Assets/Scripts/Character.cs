@@ -1,17 +1,23 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(BoxCollider2D))]
 public class Character : MonoBehaviour {
 
     [Header("Jump")]
-    [Range(0f, 6f)]
-    public float jumpForce = 6.0f;
+    [Range(0f, 100f)]
+    public float jumpForce = 1.0f;
+    [Range(0f, 100f)]
+    public float powerForce = 6.0f;
     [Range(0f, 5f)]
     public float jumpCoolDown = 6.0f;
 
+    GameObject[] powers;
     bool canTouch;
+
+    protected void Awake()
+    {        
+    }
 
     protected void Start()
     {
@@ -21,18 +27,57 @@ public class Character : MonoBehaviour {
     // Update is called once per frame
     protected void Update()
     {
-        if (Input.GetKeyDown("space") && canTouch)
+        
+    }
+
+    protected void FixedUpdate()
+    {
+        //Rotate(1);
+        if (Input.GetAxis("Horizontal") > 0)
         {
-            Jump();
+            // right
+            RightPower();
+            Debug.Log("right");
         }
+        else if (Input.GetAxis("Horizontal") < 0)
+        {
+            // left
+            LeftPower();
+            Debug.Log("left");
+        }
+
+    }
+
+    protected void Rotate(float rotateValue) {
+        if (gameObject.transform.position.x < 0) {
+            gameObject.GetComponent<Rigidbody2D>().AddTorque(-rotateValue);
+        } else if (gameObject.transform.position.x > 0){
+            gameObject.GetComponent<Rigidbody2D>().AddTorque(rotateValue);
+        }
+    }
+
+    protected void LeftPower() {
+        //Vector2 jumping = gameObject.transform.GetChild(0).GetComponent<Rigidbody2D>().velocity;
+
+        //jumping.x = transform.position.x - powerForce;
+        //jumping.y = transform.position.y + jumpForce;
+        //gameObject.GetComponent<Rigidbody2D>().velocity = jumping;
+
+        gameObject.transform.GetChild(0).GetComponent<Rigidbody2D>().AddForce(new Vector2(-powerForce, jumpForce) * 10f * Time.deltaTime);
+    }
+
+    protected void RightPower()
+    {
+        //Vector2 jumping = gameObject.transform.GetChild(1).GetComponent<Rigidbody2D>().velocity;
+        //jumping.x = transform.position.x + powerForce;
+        //jumping.y = transform.position.y + jumpForce;
+        //gameObject.GetComponent<Rigidbody2D>().velocity = jumping;
+
+        gameObject.transform.GetChild(1).GetComponent<Rigidbody2D>().AddForce(new Vector2(powerForce, jumpForce) * 10f * Time.deltaTime);
     }
 
     public void Jump()
     {
-        Vector2 jumping = gameObject.GetComponent<Rigidbody2D>().velocity;
-        jumping.y = transform.position.y + jumpForce;
-        //jumping.x = transform.position.x + jumpForce;
-        gameObject.GetComponent<Rigidbody2D>().velocity = jumping;
         canTouch = false;
 
         StartCoroutine("CoolDown");
@@ -45,7 +90,7 @@ public class Character : MonoBehaviour {
         if (collision.tag == "GameOver")
         {
             Debug.Log("Game Over");
-            PlayDirector.PopUPGameOver();
+            PlayDirector.GameOver();
         }
     }
 
