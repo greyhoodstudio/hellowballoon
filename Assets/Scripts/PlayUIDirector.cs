@@ -11,6 +11,8 @@ public class PlayUIDirector : MonoBehaviour {
     public Slider energySlider;
     public GameObject energyCounter;
     public GameObject GameOverUI;
+    public Text CoinText;
+    public Text ScoreText;
 
     float powerPercent;
     int powerCount;
@@ -60,6 +62,14 @@ public class PlayUIDirector : MonoBehaviour {
             energyIconArray[i].GetComponent<Image>().enabled = true;
         }
 
+    }
+
+    public void SetCoinValue(int coinCount) {
+        CoinText.text = "Coin: " + coinCount;
+    }
+
+    public void SetScoreValue(int scoreCount) {
+        ScoreText.text = "Score: " + scoreCount;
     }
 
     public void PopUPGameOver() {

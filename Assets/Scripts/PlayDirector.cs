@@ -63,6 +63,7 @@ public class PlayDirector : MonoBehaviour {
     public void GameOver()
     {
         gameObject.GetComponent<PlayUIDirector>().PopUPGameOver();
+        // coin과 score 핸들링 필요
     }
 
     public static void AddCoin() {

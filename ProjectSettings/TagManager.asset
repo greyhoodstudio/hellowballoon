@@ -10,6 +10,9 @@ TagManager:
   - GameOver
   - PlayDirector
   - Cinemachine
+  - Boost
+  - Fuel
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -55,4 +58,7 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 2142474567
+    locked: 0
+  - name: Item
+    uniqueID: 3694139513
     locked: 0
