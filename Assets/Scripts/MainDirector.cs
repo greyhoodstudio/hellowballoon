@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class MainDirector : MonoBehaviour {
 
-    private void Awake() {
+    public static MainDirector instance;
+
+    void Awake() {
         
     }
 

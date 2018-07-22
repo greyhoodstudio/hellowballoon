@@ -10,9 +10,8 @@ public class PlayDirector : MonoBehaviour {
     static int currentCoin;
     static int score;
 
-    public int charType;
+    [System.NonSerialized]
     public GameObject newPlayer;
-
 
     GameObject cineMachine;
 
@@ -31,10 +30,9 @@ public class PlayDirector : MonoBehaviour {
     void Start()
     {
         cineMachine = GameObject.FindGameObjectWithTag("Cinemachine");
-        restartMenu = GameObject.FindWithTag("Finish");
-        restartMenu.SetActive(false);
-        charType = 0;
-        CreateCharacter(charType);
+
+        Debug.Log(GameDirector.charNumber);
+        CreateCharacter(GameDirector.charNumber);
     }
 
 	// Update is called once per frame
@@ -48,17 +46,23 @@ public class PlayDirector : MonoBehaviour {
 
     void CreateCharacter(int prefabNum) {
         if (prefabNum == 0) {
-            newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
+            newPlayer = Instantiate(Resources.Load("Prefabs/BasicCharacter")) as GameObject;
         } else if (prefabNum == 1) {
             newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
+        } else if (prefabNum == 2) {
+            newPlayer = Instantiate(Resources.Load("Prefabs/ImpulseCharacter")) as GameObject;
         }
         cineMachine.GetComponent<CinemachineVirtualCamera>().Follow = newPlayer.transform as Transform;
+
+        int energyType = newPlayer.GetComponent<Character>().energyType;
+        int maxEnergy = newPlayer.GetComponent<Character>().maxEnergy;
+
+        gameObject.GetComponent<PlayUIDirector>().SetEnergyUI(energyType, maxEnergy);
     }
 
-    public static void GameOver()
+    public void GameOver()
     {
-        restartMenu.SetActive(true);
-        // save data, score and coin
+        gameObject.GetComponent<PlayUIDirector>().PopUPGameOver();
     }
 
     public static void AddCoin() {

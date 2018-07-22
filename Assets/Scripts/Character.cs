@@ -18,29 +18,38 @@ public class Character : MonoBehaviour {
     public float rotateValue = 0.5f;
 
     [Header("Energe")]
-    [Range(0f, 200f)]
-    public float maxPower = 100f;
+    [Range(0, 200)]
+    public int maxEnergy = 100;
 
-    protected float currentPower;
+    // 0 is slices, 1 is count
+    [System.NonSerialized]
+    public int energyType = 0;
+
+    protected float currentEnergy;
     protected bool canTouch;
+
+    protected void Awake() {
+        SetCharSetting();
+    }
 
     protected void Start()
     {
         canTouch = true;
-        currentPower = maxPower;
+        currentEnergy = maxEnergy;
     }
 
     protected void FixedUpdate()
     {
-        if (!canTouch) {
-            return;
-        }
         Power();
+    }
+
+    protected virtual void SetCharSetting() {
+        energyType = 0;
     }
 
     protected virtual void Power() {
         //Rotate(1);
-        if (currentPower < 0.1)
+        if (currentEnergy < 0.1)
         {
             return;
         }
@@ -50,17 +59,19 @@ public class Character : MonoBehaviour {
             RightPower();
             StartCoroutine("CoolDown");
             canTouch = false;
-            currentPower--;
+            currentEnergy--;
         } else if (Input.GetAxis("Horizontal") < 0) {
             // left
             LeftPower();
             StartCoroutine("CoolDown");
             canTouch = false;
-            currentPower--;
+            currentEnergy--;
+        } else {
+            return;
         }
 
         float healthPercent = CalculatePercentHealth();
-        UIDirector.SetPowerSliderValue(healthPercent);
+        GameObject.FindGameObjectWithTag("PlayDirector").GetComponent<PlayUIDirector>().SetPowerSliderValue(healthPercent);
     }
 
     protected virtual void LeftPower() {
@@ -76,25 +87,18 @@ public class Character : MonoBehaviour {
     }
 
     protected virtual void Refill() {
-        currentPower = maxPower;
-    }
-
-    protected IEnumerator CoolDown()
-    {
-        // 쿨다운
-        yield return new WaitForSeconds(jumpCoolDown);
-        canTouch = true;
+        currentEnergy = maxEnergy;
     }
 
     protected float CalculatePercentHealth() {
-        return currentPower / maxPower;
+        return currentEnergy / maxEnergy;
     }
 
     protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "GameOver") {
             Debug.Log("Game Over");
-            PlayDirector.GameOver();
+            GameObject.FindGameObjectWithTag("PlayDirector").GetComponent<PlayDirector>().GameOver();
         } else if (collision.tag == "Coin") {
             PlayDirector.AddCoin();
             Destroy(collision);
@@ -105,5 +109,11 @@ public class Character : MonoBehaviour {
             Vector2 v = new Vector2(Random.Range(-1, 1), 1);
             gameObject.GetComponent<Rigidbody2D>().AddForce(v, ForceMode2D.Impulse);
         }
+    }
+
+    protected IEnumerator CoolDown() {
+        // 쿨다운
+        yield return new WaitForSeconds(jumpCoolDown);
+        canTouch = true;
     }
 }

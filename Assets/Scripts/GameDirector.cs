@@ -3,6 +3,8 @@
 public class GameDirector : MonoBehaviour {
     private static GameDirector _instance = null; 
 
+    public static int charNumber = 0;
+
     public static GameDirector Instance
     {
         get
