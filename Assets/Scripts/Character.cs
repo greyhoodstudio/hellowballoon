@@ -6,24 +6,23 @@ using UnityEngine;
 public class Character : MonoBehaviour {
 
     [Header("Force")]
-    [Range(0f, 10f)]
+    [Range(0f, 100f)]
     public float jumpForce = 1.0f;
-    [Range(0f, 10f)]
-    public float powerForce = 6.0f;
+    [Range(0f, 100f)]
+    public float directionForce = 6.0f;
     [Range(0f, 5f)]
-    public float jumpCoolDown = 6.0f;
+    public float jumpCoolDown = 0.2f;
 
     [Header("Rotate")]
-    [Range(0f, 5f)]
-    public float correctRotate = 2.0f;
-    [Range(0f, 5f)]
+    [Range(0f, 100f)]
     public float rotateValue = 0.5f;
 
+    [Header("Energe")]
+    [Range(0f, 200f)]
+    public float maxPower = 100f;
 
-    GameObject[] powers;
-    bool canTouch;
-
-
+    protected float currentPower;
+    protected bool canTouch;
 
     protected void Awake()
     {        
@@ -32,68 +31,45 @@ public class Character : MonoBehaviour {
     protected void Start()
     {
         canTouch = true;
-    }
-
-    // Update is called once per frame
-    protected void Update()
-    {
-        if (Input.GetKeyDown("space")) {
-            Jump();
-        }
+        currentPower = maxPower;
     }
 
     protected void FixedUpdate()
     {
+        if (!canTouch) {
+            return;
+        }
+        Power();
+    }
+
+    protected virtual void Power() {
         //Rotate(1);
-        if (Input.GetAxis("Horizontal") > 0)
-        {
+        if (Input.GetAxis("Horizontal") > 0) {
             // right
             RightPower();
-        }
-        else if (Input.GetAxis("Horizontal") < 0)
-        {
+            StartCoroutine("CoolDown");
+            canTouch = false;
+        } else if (Input.GetAxis("Horizontal") < 0) {
             // left
             LeftPower();
-        }
-
-        Rotate();
-    }
-
-    protected void Rotate() {
-        if (gameObject.transform.position.x < 0) {
-            gameObject.GetComponent<Rigidbody2D>().AddTorque(-rotateValue);
-        } else if (gameObject.transform.position.x > 0){
-            gameObject.GetComponent<Rigidbody2D>().AddTorque(rotateValue);
+            StartCoroutine("CoolDown");
+            canTouch = false;
         }
     }
 
-    protected void LeftPower() {
-        Vector2 vector = new Vector2(-powerForce, jumpForce);
-        gameObject.GetComponent<Rigidbody2D>().AddTorque(correctRotate);
-        gameObject.GetComponent<Rigidbody2D>().AddForce(vector, ForceMode2D.Impulse);
+    protected virtual void LeftPower() {
 
     }
 
-    protected void RightPower()
-    {
-        Vector2 vector = new Vector2(powerForce, jumpForce);
-        gameObject.GetComponent<Rigidbody2D>().AddTorque(-correctRotate);
-        gameObject.GetComponent<Rigidbody2D>().AddForce(vector, ForceMode2D.Impulse);
+    protected virtual void RightPower() {
 
     }
 
-    public void Jump()
-    {
-        canTouch = false;
-
-        gameObject.transform.GetChild(0).GetComponent<Rigidbody2D>().AddRelativeForce(Vector2.up * 100, ForceMode2D.Impulse);
-
-        StartCoroutine("CoolDown");
-
-        Debug.Log("jump");
+    protected virtual void Refill() {
+        currentPower = maxPower;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "GameOver")
         {
@@ -109,4 +85,7 @@ public class Character : MonoBehaviour {
         canTouch = true;
     }
 
+    public float CalculatePercentHealth() {
+        return currentPower / maxPower;
+    }
 }

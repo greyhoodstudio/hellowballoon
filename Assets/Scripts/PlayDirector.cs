@@ -8,9 +8,9 @@ public class PlayDirector : MonoBehaviour {
     public static PlayDirector instance;
     private static GameObject gameOver;
 
-    public int prefabNumber;
+    public int charType;
     GameObject cineMachine;
-    GameObject newPlayer;
+    public GameObject newPlayer;
 
     void Awake()
     {
@@ -26,21 +26,27 @@ public class PlayDirector : MonoBehaviour {
 	// Use this for initialization
     void Start()
     {
-        prefabNumber = 0;
         cineMachine = GameObject.FindGameObjectWithTag("Cinemachine");
         gameOver = GameObject.FindWithTag("Finish");
         gameOver.SetActive(false);
-
-        if (prefabNumber == 0) {
-            newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
-        }
-        cineMachine.GetComponent<CinemachineVirtualCamera>().Follow = newPlayer.transform as Transform;
+        charType = 0;
+        CreateCharacter(charType);
     }
 
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    void CreateCharacter(int charType) {
+        
+        if (charType == 0) {
+            newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
+        } else if (charType == 1) {
+            newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
+        }
+        cineMachine.GetComponent<CinemachineVirtualCamera>().Follow = newPlayer.transform as Transform;
+    }
 
     public static void GameOver()
     {
