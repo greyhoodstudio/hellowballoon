@@ -24,10 +24,6 @@ public class Character : MonoBehaviour {
     protected float currentPower;
     protected bool canTouch;
 
-    protected void Awake()
-    {        
-    }
-
     protected void Start()
     {
         canTouch = true;
@@ -44,38 +40,43 @@ public class Character : MonoBehaviour {
 
     protected virtual void Power() {
         //Rotate(1);
+        if (currentPower < 0.1)
+        {
+            return;
+        }
+
         if (Input.GetAxis("Horizontal") > 0) {
             // right
             RightPower();
             StartCoroutine("CoolDown");
             canTouch = false;
+            currentPower--;
         } else if (Input.GetAxis("Horizontal") < 0) {
             // left
             LeftPower();
             StartCoroutine("CoolDown");
             canTouch = false;
+            currentPower--;
         }
+
+        float healthPercent = CalculatePercentHealth();
+        UIDirector.SetPowerSliderValue(healthPercent);
     }
 
     protected virtual void LeftPower() {
-
+        Vector2 v = new Vector2(-directionForce, jumpForce).normalized;
+        gameObject.GetComponent<Rigidbody2D>().AddForce(v, ForceMode2D.Impulse);
+        //gameObject.GetComponent<Rigidbody2D>().AddTorque(+rotateValue);
     }
 
     protected virtual void RightPower() {
-
+        Vector2 v = new Vector2(+directionForce, jumpForce).normalized;
+        gameObject.GetComponent<Rigidbody2D>().AddForce(v, ForceMode2D.Impulse);
+        //gameObject.GetComponent<Rigidbody2D>().AddTorque(-rotateValue);
     }
 
     protected virtual void Refill() {
         currentPower = maxPower;
-    }
-
-    protected void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "GameOver")
-        {
-            Debug.Log("Game Over");
-            PlayDirector.GameOver();
-        }
     }
 
     protected IEnumerator CoolDown()
@@ -85,7 +86,24 @@ public class Character : MonoBehaviour {
         canTouch = true;
     }
 
-    public float CalculatePercentHealth() {
+    protected float CalculatePercentHealth() {
         return currentPower / maxPower;
+    }
+
+    protected void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "GameOver") {
+            Debug.Log("Game Over");
+            PlayDirector.GameOver();
+        } else if (collision.tag == "Coin") {
+            PlayDirector.AddCoin();
+            Destroy(collision);
+        } else if (collision.tag == "Fuel") {
+            Refill();
+            Destroy(collision);
+        } else if (collision.tag == "Boost") {
+            Vector2 v = new Vector2(Random.Range(-1, 1), 1);
+            gameObject.GetComponent<Rigidbody2D>().AddForce(v, ForceMode2D.Impulse);
+        }
     }
 }

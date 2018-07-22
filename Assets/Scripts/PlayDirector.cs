@@ -4,13 +4,17 @@ using UnityEngine;
 using Cinemachine;
 
 public class PlayDirector : MonoBehaviour {
-
+    
     public static PlayDirector instance;
-    private static GameObject gameOver;
+    public static GameObject restartMenu;
+    static int currentCoin;
+    static int score;
 
     public int charType;
-    GameObject cineMachine;
     public GameObject newPlayer;
+
+
+    GameObject cineMachine;
 
     void Awake()
     {
@@ -27,8 +31,8 @@ public class PlayDirector : MonoBehaviour {
     void Start()
     {
         cineMachine = GameObject.FindGameObjectWithTag("Cinemachine");
-        gameOver = GameObject.FindWithTag("Finish");
-        gameOver.SetActive(false);
+        restartMenu = GameObject.FindWithTag("Finish");
+        restartMenu.SetActive(false);
         charType = 0;
         CreateCharacter(charType);
     }
@@ -38,11 +42,14 @@ public class PlayDirector : MonoBehaviour {
 		
 	}
 
-    void CreateCharacter(int charType) {
+    void GenerateMapObjects() {
         
-        if (charType == 0) {
+    }
+
+    void CreateCharacter(int prefabNum) {
+        if (prefabNum == 0) {
             newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
-        } else if (charType == 1) {
+        } else if (prefabNum == 1) {
             newPlayer = Instantiate(Resources.Load("Prefabs/JumpCharacter")) as GameObject;
         }
         cineMachine.GetComponent<CinemachineVirtualCamera>().Follow = newPlayer.transform as Transform;
@@ -50,7 +57,11 @@ public class PlayDirector : MonoBehaviour {
 
     public static void GameOver()
     {
-        gameOver.SetActive(true);
+        restartMenu.SetActive(true);
+        // save data, score and coin
     }
 
+    public static void AddCoin() {
+        currentCoin++;
+    }
 }

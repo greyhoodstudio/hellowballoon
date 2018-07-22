@@ -9,12 +9,10 @@ public class GameDirector : MonoBehaviour {
         {
             if (_instance == null) {
                 _instance = FindObjectOfType(typeof(GameDirector)) as GameDirector;
-
                 if (_instance == null ) {
                     Debug.LogError("There is no active gamedirector class object");
                 } 
             }
-
             return _instance;
         }
     }
